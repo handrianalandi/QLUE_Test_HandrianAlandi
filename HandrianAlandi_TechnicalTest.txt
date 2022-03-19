@@ -1,5 +1,5 @@
 --shell1--
--
+sudo netstat -tulpn | grep httpd
 
 --shell2--
 sed -i "s/Mango/Apple/g" /tmp/mig33/inner.folder/1.txt
