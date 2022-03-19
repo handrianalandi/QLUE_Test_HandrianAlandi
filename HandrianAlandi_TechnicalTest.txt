@@ -1,0 +1,35 @@
+--shell1--
+-
+
+--shell2--
+sed -i "s/Mango/Apple/g" /tmp/mig33/inner.folder/1.txt
+
+
+--postgresql--
+asumsi: harga dalam rupiah
+
+asumsi no 1: yang diminta adalah total dari tiap transaksi, jika yang dimaksud adalah total semua transaksi tiap orang, 
+maka masukkan CONVERT(REGEXP_REPLACE(items.price, '[.a-zA-Z]', ''),UNSIGNED INTEGER)*transactions.total ke dalam SUM(),
+lalu group by kan dengan transactions.person_id
+-1-
+SELECT persons.name,
+CONCAT('Rp. ',FORMAT((CONVERT(REGEXP_REPLACE(items.price, '[.a-zA-Z]', ''),UNSIGNED INTEGER)*transactions.total),0,'id_ID')) as `total_price`
+FROM transactions
+JOIN items ON transactions.item_id=items.id
+JOIN persons ON persons.id=transactions.person_id;
+
+-2-
+SELECT persons.name as `customer_name`,items.name as `item_name` FROM transactions
+JOIN items ON transactions.item_id=items.id
+JOIN persons ON persons.id=transactions.person_id
+WHERE transactions.date BETWEEN '2020-01-01' AND '2020-06-25'
+ORDER BY transactions.date;
+
+-3-
+SELECT persons.name,COUNT(DISTINCT(items.id)) AS `variety` FROM transactions
+JOIN items ON transactions.item_id=items.id
+JOIN persons ON persons.id=transactions.person_id  
+GROUP BY persons.name
+ORDER BY `variety` DESC;
+
+
